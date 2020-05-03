@@ -1,0 +1,8 @@
+main: de.rexlnico.realtime.main.Main
+author: rexlNico
+version: 2.5
+name: RealTimePlugin
+website: dev.rexlNico.de
+
+commands:
+  realtime:
