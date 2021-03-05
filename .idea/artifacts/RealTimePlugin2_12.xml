@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RealTimePlugin2.12">
+    <output-path>$USER_HOME$/Desktop</output-path>
+    <root id="archive" name="RealTimePlugin2.12.jar">
+      <element id="module-output" name="RealTimePlugin" />
+    </root>
+  </artifact>
+</component>

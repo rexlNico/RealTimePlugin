@@ -1,5 +1,6 @@
 package de.rexlnico.realtime.main;
 
+import de.rexlnico.realtime.api.Update;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -12,8 +13,8 @@ import de.rexlnico.realtime.commands.Reload;
 import de.rexlnico.realtime.listeners.Join;
 
 import java.io.*;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.TimeZone;
 
 public class Main extends JavaPlugin {
 
@@ -21,6 +22,7 @@ public class Main extends JavaPlugin {
     private TimeUpdater timeUpdate;
     private WeatherUpdater weatherUpdater;
     private PluginManager pluginManager;
+    private Update update;
 
     @Override
     public void onEnable() {
@@ -28,7 +30,9 @@ public class Main extends JavaPlugin {
         pluginManager = Bukkit.getPluginManager();
         timeUpdate = new TimeUpdater(getInstance());
         weatherUpdater = new WeatherUpdater(getInstance());
+        update = new Update(getInstance());
 
+        pluginManager.registerEvents(update, this);
         pluginManager.registerEvents(new Join(), this);
         getCommand("realtime").setExecutor(new Reload());
 
@@ -38,7 +42,7 @@ public class Main extends JavaPlugin {
         Messages.load();
 
         ArrayList<String> list = new ArrayList<>();
-        for (String s : TimeZone.getAvailableIDs()) {
+        for (String s : ZoneId.getAvailableZoneIds()) {
             list.add(s);
         }
         File file = new File("plugins/RealTime/examples/timezones.yml");

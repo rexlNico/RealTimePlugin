@@ -37,7 +37,15 @@ public class WeatherUpdater {
     private boolean timer = false;
     private int taskID;
 
+    private ArrayList<String> keys;
+
     public WeatherUpdater(Main instance) {
+        keys = new ArrayList<>();
+        keys.add("c91a880d4154c9782019a010b1e312a7");
+        keys.add("16e8ffada1fbdbe3f3903802b0785751");
+        keys.add("1f8280a6c1853939d4056dae30554007");
+        keys.add("c47e79a7cf6aeab9007638a3b8d27392");
+        keys.add("f294c04f34a16480a264b6d339b7d118");
         this.file = new File("plugins/RealTime/config.cfg");
         this.cfg = YamlConfiguration.loadConfiguration(file);
         this.instance = instance;
@@ -45,15 +53,13 @@ public class WeatherUpdater {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
         ArrayList<String> bspworlds = new ArrayList<>();
         bspworlds.add("world");
         cfg.addDefault("Worlds", bspworlds);
-        cfg.addDefault("UpdateInervall", (long) 10);
-        cfg.addDefault("Time.Active", true);
+        cfg.addDefault("UpdateIntervall", (long) 10);
         cfg.addDefault("Weather.Active", true);
         cfg.addDefault("Weather.Country", "Germany");
         cfg.addDefault("Weather.City", "Berlin");
@@ -64,16 +70,15 @@ public class WeatherUpdater {
             e.printStackTrace();
         }
         this.worlds = (ArrayList<String>) cfg.getStringList("Worlds");
-        this.intervall = cfg.getLong("UpdateInervall");
+        this.intervall = cfg.getLong("UpdateIntervall");
         this.country = cfg.getString("Weather.Country");
         this.city = cfg.getString("Weather.City");
         this.active = cfg.getBoolean("Weather.Active");
-        if (this.intervall <= 0) {
-            this.intervall = 10;
+        if (this.intervall <= 30) {
+            this.intervall = 30;
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void startTimer() {
         if (!timer) {
             for (String world : this.worlds) {
@@ -110,7 +115,7 @@ public class WeatherUpdater {
     private int count = 0;
 
     public void setWeather(Player player) {
-        String weather = getWeather();
+        String weather = getWeather(0, 1);
         switch (weather) {
             case "rain":
                 try {
@@ -143,34 +148,23 @@ public class WeatherUpdater {
     }
 
     private String getUrlSource(String url) {
-        URL url2 = null;
         try {
+            URL url2 = null;
             url2 = new URL(url);
-        } catch (MalformedURLException ex) {
-        }
-        URLConnection yc = null;
-        try {
+            URLConnection yc = null;
             yc = url2.openConnection();
-        } catch (IOException ex2) {
-        }
-        BufferedReader in = null;
-        try {
+            BufferedReader in = null;
             in = new BufferedReader(new InputStreamReader(yc.getInputStream(), "UTF-8"));
-        } catch (IOException ex3) {
-        }
-        final StringBuilder a = new StringBuilder();
-        try {
+            final StringBuilder a = new StringBuilder();
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 a.append(inputLine);
             }
-        } catch (IOException ex4) {
-        }
-        try {
             in.close();
-        } catch (IOException ex5) {
+            return a.toString();
+        } catch (Exception e) {
+            return null;
         }
-        return a.toString();
     }
 
     private JSONObject toJSON(final String json) {
@@ -183,16 +177,7 @@ public class WeatherUpdater {
             final Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
             final Object packet = getNMSClass("PacketPlayOutGameStateChange").getConstructor(Integer.TYPE, Float.TYPE).newInstance(type, state);
             playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e2) {
-            e2.printStackTrace();
-        } catch (InvocationTargetException e3) {
-            e3.printStackTrace();
-        } catch (NoSuchMethodException e4) {
-            e4.printStackTrace();
-        } catch (SecurityException e5) {
-            e5.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 
@@ -240,8 +225,7 @@ public class WeatherUpdater {
     private Class<?> getNMSClass(String name) {
         try {
             return Class.forName("net.minecraft.server." + getNMSVersion() + "." + name);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException ignored) {
             return null;
         }
     }
@@ -250,13 +234,30 @@ public class WeatherUpdater {
         return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     }
 
-    public String getWeather() {
-        String weather = "";
-        final String search = String.valueOf(this.city + "," + this.country);
-        final String url = "http://api.openweathermap.org/data/2.5/weather?q=" + search + "&APPID=16e8ffada1fbdbe3f3903802b0785751";
-        final JSONObject object = toJSON(getUrlSource(url));
-        weather = (String) ((JSONObject) ((JSONArray) object.get((Object) "weather")).get(0)).get((Object) "main");
-        return weather.toLowerCase();
+
+    public String getWeather(int key, int Try) {
+        if (Try == 10) {
+            return "sun";
+        }
+        try {
+            if (key >= keys.size()) {
+                key = 0;
+            }
+            String weather = "";
+            final String search = String.valueOf(this.city + "," + this.country);
+            final String url = "http://api.openweathermap.org/data/2.5/weather?q=" + search + "&APPID=" + (instance.getTimeUpdater().isUseKey() ? instance.getTimeUpdater().getKey() : keys.get(key));
+            String source = getUrlSource(url);
+            if (source == null) {
+                return getWeather(key + 1, Try + 1);
+            }
+            final JSONObject object = toJSON(getUrlSource(url));
+            weather = (String) ((JSONObject) ((JSONArray) object.get((Object) "weather")).get(0)).get((Object) "main");
+            return weather.toLowerCase();
+        } catch (Exception e) {
+            Bukkit.getConsoleSender().sendMessage("§4RealTimePlugin: all keys on cooldown!");
+            Bukkit.getConsoleSender().sendMessage("§4RealTimePlugin: Report this to rexlNico and setup a own key: https://home.openweathermap.org/users/sign_up");
+            return "sun";
+        }
     }
 
     public boolean isTimerActive() {
