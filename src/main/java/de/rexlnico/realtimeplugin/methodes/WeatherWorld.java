@@ -61,13 +61,13 @@ public class WeatherWorld {
     public int getTime() {
         Instant nowUtc = Instant.now();
         ZonedDateTime dateTime = ZonedDateTime.ofInstant(nowUtc, zone);
-        int time = (int) ((dateTime.getHour() * 60 + dateTime.getMinute()) * 16.6666667f) - 6000;
+        int time = (int) ((dateTime.getHour() * 60 + dateTime.getMinute()) * (16.6666667f*2f)) - 6000;
         if(time < 0){
             time = 24000 - time;
         }
-        if(time > 24000-6000){
-            time = time/2;
-        }
+//        if(time > 24000-6000){
+//            time = time = 0;
+//        }
         return time;
     }
 
