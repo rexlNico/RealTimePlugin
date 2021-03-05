@@ -49,10 +49,10 @@ public class WeatherWorld {
             taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getPlugin(), () -> {
                 if (time) world.setTime(getTime());
                 if(weather){
-                    world.setStorm(false);
-                    for (Player all : world.getPlayers()) {
-                        setWeather(all);
-                    }
+                    //world.setStorm(false);
+//                    for (Player all : world.getPlayers()) {
+                        setWeather(world);
+//                    }
                 }
             }, 0, 20 * updateInterval);
         }
@@ -73,9 +73,6 @@ public class WeatherWorld {
 
     public void disable() {
         if (time) world.setGameRuleValue("doDaylightCycle", "true");
-        if(weather){
-
-        }
         if (Bukkit.getScheduler().isCurrentlyRunning(taskID)) Bukkit.getScheduler().cancelTask(taskID);
     }
 
@@ -112,33 +109,43 @@ public class WeatherWorld {
         }
     }
 
-    public void setWeather(Player player) {
+    public void setWeather(World world) {
         String weather = getWeather();
         switch (weather) {
             case "rain":
                 try {
-                    sendState(player, 2, 0.0f);
+                    //sendState(player, 2, 0.0f);
+                    world.setStorm(true);
+                    world.setWeatherDuration(Integer.MAX_VALUE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case "thunderstorm":
                 try {
-                    sendState(player, 2, 0.0f);
-                    if (count == maxCount) {
-                        count = 0;
-                        maxCount = new Random(System.nanoTime()).nextInt(3)+1;
-                    } else {
-                        sendLightning(player, getRandomLocation(player));
-                        count++;
-                    }
+                    world.setStorm(true);
+                    world.setWeatherDuration(Integer.MAX_VALUE);
+                    world.setThundering(true);
+                    world.setThunderDuration(Integer.MAX_VALUE);
+                    //sendState(player, 2, 0.0f);
+//                    if (count == maxCount) {
+//                        count = 0;
+//                        maxCount = new Random(System.nanoTime()).nextInt(3)+1;
+//                    } else {
+//                        sendLightning(player, getRandomLocation(player));
+//                        count++;
+//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             default:
                 try {
-                    sendState(player, 1, 0.0f);
+//                    sendState(player, 1, 0.0f);
+                    world.setStorm(false);
+                    world.setWeatherDuration(0);
+                    world.setThundering(false);
+                    world.setThunderDuration(0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
