@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RealTimePlugin 3.0:jar">
+    <output-path>$PROJECT_DIR$/../../../McServerProgramm/servers/1.8.8/plugins</output-path>
+    <root id="archive" name="RealTimePlugin 3.0.jar">
+      <element id="module-output" name="RealTimePlugin 3.0" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../../spigot-1.8.9.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
