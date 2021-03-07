@@ -22,6 +22,8 @@ import java.util.List;
 
 public class WorldContainer {
 
+    private static final double SECONDS_TO_TICKS_FACTOR = 1_000d / Math.pow(60d, 2d);
+
     private final File file;
 
     private BukkitTask task;
@@ -64,7 +66,6 @@ public class WorldContainer {
                     // get time asynchronously
                     int time = getTime();
                     // set time synchronously
-                    System.out.println("Setting time in world " + world.getName() + " to " + time);
                     scheduler.runTask(plugin, () -> world.setTime(time));
                 });
             }
@@ -86,11 +87,8 @@ public class WorldContainer {
 
     public int getTime() {
         ZonedDateTime dateTime = ZonedDateTime.ofInstant(Instant.now() /* in UTC */, zone);
-        int time = (int) ((dateTime.getHour() * 60 + dateTime.getMinute()) * (16.6666667f * 2f)) - 6000;
-        if (time < 0) {
-            return 24000 - time;
-        }
-        return time;
+        int secondsInDay = dateTime.getHour() * 3600 + dateTime.getMinute() * 60 + dateTime.getSecond();
+        return Utils.overflow(18_000 + (int) (secondsInDay * SECONDS_TO_TICKS_FACTOR), 24_000);
     }
 
     public void disable() {

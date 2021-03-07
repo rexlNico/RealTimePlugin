@@ -16,6 +16,13 @@ import java.util.logging.Level;
 
 public class Utils {
 
+    public static int overflow(int value, int at) {
+        while (value > at) {
+            value -= at;
+        }
+        return value;
+    }
+
     public static byte[] httpRequest(String url) {
         try {
             return httpRequest(new URL(url));
