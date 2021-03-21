@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.logging.Level;
 
 public class Utils {
+    private static final Random RAND = new Random();
 
     public static int overflow(int value, int at) {
         while (value > at) {
@@ -58,12 +59,12 @@ public class Utils {
         Location location;
         int x;
         int z;
-        x = new Random().nextInt(player.getLocation().getBlockX() + 25) + 12;
-        z = new Random().nextInt(player.getLocation().getBlockZ() + 25) + 12;
-        if (new Random().nextBoolean()) {
+        x = RAND.nextInt(player.getLocation().getBlockX() + 25) + 12;
+        z = RAND.nextInt(player.getLocation().getBlockZ() + 25) + 12;
+        if (RAND.nextBoolean()) {
             x *= -1;
         }
-        if (new Random().nextBoolean()) {
+        if (RAND.nextBoolean()) {
             z *= -1;
         }
         location = new Location(player.getWorld(), player.getLocation().add(x, 0, z).getX(), player.getWorld().getHighestBlockYAt(x, z) + 1, player.getLocation().add(x, 0, z).getZ());
