@@ -1,5 +1,5 @@
 main: de.rexlnico.realtimeplugin.main.Main
-author: rexlNico
+authors: [ rexlNico, fluse1367 ]
 version: 3.0
 name: RealTimePlugin
 website: https://rexlNico.de
