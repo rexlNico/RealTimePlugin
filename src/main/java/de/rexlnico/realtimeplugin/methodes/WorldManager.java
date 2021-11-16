@@ -26,7 +26,8 @@ public class WorldManager {
         File worldsDir = new File(Main.getPlugin().getDataFolder(), "worlds");
         File[] fileList = worldsDir.listFiles();
         if (fileList == null) {
-            createExample(worldsDir);
+            createTemplate(worldsDir);
+            createDefault(worldsDir);
             return;
         }
         for (File file : fileList) {
@@ -94,9 +95,16 @@ public class WorldManager {
         worlds.forEach(WorldContainer::disable);
     }
 
-    private void createExample(File dir) throws IOException {
-        InputStream root = Main.getPlugin().getResource("example.json");
-        File filePath = new File(dir, "example.json");
+    private void createTemplate(File dir) throws IOException {
+        InputStream root = Main.getPlugin().getResource("template.json");
+        File filePath = new File(dir, "template.json");
+        YamlConfiguration.loadConfiguration(filePath).save(filePath);
+        Files.copy(root, filePath.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    private void createDefault(File dir) throws IOException {
+        InputStream root = Main.getPlugin().getResource("world.json");
+        File filePath = new File(dir, "world.json");
         YamlConfiguration.loadConfiguration(filePath).save(filePath);
         Files.copy(root, filePath.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }

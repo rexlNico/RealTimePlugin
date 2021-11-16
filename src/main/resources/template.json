@@ -1,0 +1,15 @@
+{
+  "world": "example",
+  "updateInterval": 20,
+  "active": false,
+  "time": {
+    "active": false,
+    "timezone": "Europe/Berlin"
+  },
+  "weather": {
+    "active": false,
+    "City": "Berlin",
+    "Country": "Germany",
+    "weatherKey": ""
+  }
+}

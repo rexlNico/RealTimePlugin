@@ -85,8 +85,12 @@ public class WorldContainer {
         }
     }
 
+    public ZonedDateTime getDateTime(){
+        return ZonedDateTime.ofInstant(Instant.now() /* in UTC */, zone);
+    }
+
     public int getTime() {
-        ZonedDateTime dateTime = ZonedDateTime.ofInstant(Instant.now() /* in UTC */, zone);
+        ZonedDateTime dateTime = getDateTime();
         int secondsInDay = dateTime.getHour() * 3600 + dateTime.getMinute() * 60 + dateTime.getSecond();
         return Utils.overflow(18_000 + (int) (secondsInDay * SECONDS_TO_TICKS_FACTOR), 24_000);
     }
@@ -118,7 +122,7 @@ public class WorldContainer {
                 JSONObject weatherObject = (JSONObject) object.get("weather");
                 this.weather = (boolean) weatherObject.get("active");
                 this.weatherKey = (String) weatherObject.get("weatherKey");
-                this.weatherLocation = new String[]{(String) weatherObject.get("City"), (String) weatherObject.get("Country")};
+                this.weatherLocation = new String[]{((String) weatherObject.get("City")).replace(" ", "%20"), ((String) weatherObject.get("Country")).replace(" ", "%20")};
             }
         } catch (Exception e) {
             throw new RuntimeException(String.format("Count not load world configuration %s", this.file), e);

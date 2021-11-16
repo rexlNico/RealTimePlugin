@@ -15,7 +15,9 @@ public class Messages {
     public static String prefix = "";
     public static String reloadFileMSG = "";
     public static String reloadAllMSG = "";
+    public static String timeMSG = "";
     public static String reloadHelp = "";
+    public static String timeHelp = "";
     public static String noFile = "";
     public static String noPermissions = "";
 
@@ -33,7 +35,9 @@ public class Messages {
         cfg.addDefault("Prefix", "&8[&eRealtime&8] ");
         cfg.addDefault("reloadFileMSG", "successfully reloaded %file%");
         cfg.addDefault("reloadAllMSG", "successfully reloaded!");
+        cfg.addDefault("timeMSG", "current time for %file% is %time%");
         cfg.addDefault("reloadHelp", "&cPlease use /realtime reload (file)");
+        cfg.addDefault("timeHelp", "&cPlease use /realtime time (file)");
         cfg.addDefault("noFile", "&cThe file %file% does not exist!");
         cfg.addDefault("noPermsMSG", "You have insufficient permissions to perform this action!");
         cfg.options().copyDefaults(true);
@@ -45,7 +49,9 @@ public class Messages {
         prefix = cfg.getString("Prefix").replace("&", "§");
         reloadFileMSG = cfg.getString("reloadFileMSG").replace("&", "§");
         reloadAllMSG = cfg.getString("reloadAllMSG").replace("&", "§");
+        timeMSG = cfg.getString("timeMSG").replace("&", "§");
         reloadHelp = cfg.getString("reloadHelp").replace("&", "§");
+        timeHelp = cfg.getString("timeHelp").replace("&", "§");
         noFile = cfg.getString("noFile").replace("&", "§");
         noPermissions = cfg.getString("noPermsMSG").replace("&", "§");
     }

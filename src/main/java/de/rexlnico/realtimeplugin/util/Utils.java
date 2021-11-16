@@ -28,7 +28,7 @@ public class Utils {
         try {
             return httpRequest(new URL(url));
         } catch (MalformedURLException e) {
-            Main.getPlugin().getLogger().log(Level.SEVERE, String.format("HTTP request to %s failed", url), e);
+            //Main.getPlugin().getLogger().log(Level.SEVERE, String.format("HTTP request to %s failed", url), e);
             return null;
         }
     }
@@ -50,7 +50,7 @@ public class Utils {
 
             return bout.toByteArray();
         } catch (Exception e) {
-            Main.getPlugin().getLogger().log(Level.SEVERE, String.format("HTTP request to %s failed", url), e);
+            //Main.getPlugin().getLogger().log(Level.SEVERE, String.format("HTTP request to %s failed", url), e);
             return null;
         }
     }
