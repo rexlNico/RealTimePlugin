@@ -1,6 +1,7 @@
 package de.rexlnico.realtimeplugin.methodes;
 
 import de.rexlnico.realtimeplugin.main.Main;
+import de.rexlnico.realtimeplugin.util.Metrics;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
@@ -8,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WorldManager {
 
@@ -20,6 +23,7 @@ public class WorldManager {
         loadAll();
         setTabComplete();
         createTimeTable();
+        setStats();
     }
 
     private void loadAll() throws IOException {
@@ -73,6 +77,21 @@ public class WorldManager {
         for (WorldContainer world : worlds) {
             tabComplete.add(world.getFile().getName());
         }
+        setStats();
+    }
+
+    public void setStats() {
+        Map<String, Integer> timeZones = new HashMap<>();
+        Map<String, Integer> weatherCities = new HashMap<>();
+        for (WorldContainer world : worlds) {
+            if (world.time)
+                timeZones.put(world.getTimezone(), timeZones.getOrDefault(world.getTimezone(), 0) + 1);
+            if (world.weather)
+                weatherCities.put(world.getWeatherLocation()[0], weatherCities.getOrDefault(world.getWeatherLocation()[0], 0) + 1);
+        }
+        Main.getMetrics().addCustomChart(new Metrics.AdvancedPie("time_zones", () -> timeZones));
+        Main.getMetrics().addCustomChart(new Metrics.AdvancedPie("weather_cities", () -> weatherCities));
+        Main.getMetrics().addCustomChart(new Metrics.SimplePie("diff_worlds", () -> worlds.size() + ""));
     }
 
     public WorldContainer getWeatherWorld(String name) {

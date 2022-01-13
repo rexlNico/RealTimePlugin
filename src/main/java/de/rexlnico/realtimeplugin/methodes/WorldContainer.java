@@ -33,8 +33,8 @@ public class WorldContainer {
     private boolean active;
     private World world;
     private long updateInterval;
-    private boolean time;
-    private boolean weather;
+    public boolean time;
+    public boolean weather;
     private String weatherKey;
     private String timezone;
     private ZoneId zone;
