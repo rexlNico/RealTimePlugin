@@ -47,7 +47,7 @@ public class WorldManager {
         if (fileList == null) return;
         for (File file : fileList) {
             if (file.getName().contains(".json")) {
-                if (containsFile(file.getName())) {
+                if (!containsFile(file.getName())) {
                     worlds.add(new WorldContainer(file));
                 }
             }
