@@ -68,6 +68,11 @@ public class WorldManager {
         writer.close();
     }
 
+    public void unloadWorldContainer(WorldContainer worldContainer){
+        worlds.remove(worldContainer);
+        setTabComplete();
+    }
+
     public ArrayList<String> getTabComplete() {
         return tabComplete;
     }

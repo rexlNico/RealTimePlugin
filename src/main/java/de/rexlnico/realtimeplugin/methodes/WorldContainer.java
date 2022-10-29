@@ -106,6 +106,11 @@ public class WorldContainer {
 
         // load JSON data
         JSONParser parser = new JSONParser();
+        if(!file.exists()){
+            cancelTask();
+            Main.getWorldManager().unloadWorldContainer(this);
+            return;
+        }
         try (Reader reader = new FileReader(file.getPath())) {
             JSONObject object = (JSONObject) parser.parse(reader);
 
