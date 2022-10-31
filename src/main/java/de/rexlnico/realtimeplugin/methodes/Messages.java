@@ -21,6 +21,9 @@ public class Messages {
     public static String noFile = "";
     public static String noPermissions = "";
 
+    public static String currentVersion = "";
+    public static String newestVersion = "";
+
     public static void load() {
         File file = new File(Main.getPlugin().getDataFolder(), "messages.cfg");
         if (file.exists()) {
@@ -40,6 +43,8 @@ public class Messages {
         cfg.addDefault("timeHelp", "&cPlease use /realtime time (file)");
         cfg.addDefault("noFile", "&cThe file %file% does not exist!");
         cfg.addDefault("noPermsMSG", "You have insufficient permissions to perform this action!");
+        cfg.addDefault("currentVersion", "Current version: %version%");
+        cfg.addDefault("newestVersion", "Newest version: %version%");
         cfg.options().copyDefaults(true);
         try {
             cfg.save(file);
@@ -54,6 +59,8 @@ public class Messages {
         timeHelp = cfg.getString("timeHelp").replace("&", "§");
         noFile = cfg.getString("noFile").replace("&", "§");
         noPermissions = cfg.getString("noPermsMSG").replace("&", "§");
+        currentVersion = cfg.getString("currentVersion").replace("&", "§");
+        newestVersion = cfg.getString("newestVersion").replace("&", "§");
     }
 
 }

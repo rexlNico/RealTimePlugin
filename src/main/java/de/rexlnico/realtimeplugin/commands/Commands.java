@@ -55,9 +55,12 @@ public class Commands implements CommandExecutor, TabCompleter {
                         sender.sendMessage(Messages.prefix + Messages.reloadHelp);
                     }
                     return true;
+                case "version" :
+                    sender.sendMessage(Messages.prefix + Messages.currentVersion.replace("%version%", Main.getPlugin().getCurrentVersion()));
+                    sender.sendMessage(Messages.prefix + Messages.newestVersion.replace("%version%", Main.getPlugin().getNewestVersion()));
+                    break;
             }
         }
-
         sender.sendMessage(Messages.prefix + Messages.reloadHelp);
         return false;
     }
@@ -71,7 +74,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                 return Main.getWorldManager().getTabComplete();
             }
         } else if (args.length == 1) {
-            return Arrays.asList("reload", "time");
+            return Arrays.asList("reload", "time", "version");
         }
 
         return new ArrayList<>();
