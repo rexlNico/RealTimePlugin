@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class Messages {
@@ -51,16 +52,16 @@ public class Messages {
         } catch (Exception e) {
             Main.getPlugin().getLogger().log(Level.WARNING, "Could not save messages.cfg!", e);
         }
-        prefix = cfg.getString("Prefix").replace("&", "§");
-        reloadFileMSG = cfg.getString("reloadFileMSG").replace("&", "§");
-        reloadAllMSG = cfg.getString("reloadAllMSG").replace("&", "§");
-        timeMSG = cfg.getString("timeMSG").replace("&", "§");
-        reloadHelp = cfg.getString("reloadHelp").replace("&", "§");
-        timeHelp = cfg.getString("timeHelp").replace("&", "§");
-        noFile = cfg.getString("noFile").replace("&", "§");
-        noPermissions = cfg.getString("noPermsMSG").replace("&", "§");
-        currentVersion = cfg.getString("currentVersion").replace("&", "§");
-        newestVersion = cfg.getString("newestVersion").replace("&", "§");
+        prefix = Objects.requireNonNull(cfg.getString("Prefix")).replace("&", "§");
+        reloadFileMSG = Objects.requireNonNull(cfg.getString("reloadFileMSG")).replace("&", "§");
+        reloadAllMSG = Objects.requireNonNull(cfg.getString("reloadAllMSG")).replace("&", "§");
+        timeMSG = Objects.requireNonNull(cfg.getString("timeMSG")).replace("&", "§");
+        reloadHelp = Objects.requireNonNull(cfg.getString("reloadHelp")).replace("&", "§");
+        timeHelp = Objects.requireNonNull(cfg.getString("timeHelp")).replace("&", "§");
+        noFile = Objects.requireNonNull(cfg.getString("noFile")).replace("&", "§");
+        noPermissions = Objects.requireNonNull(cfg.getString("noPermsMSG")).replace("&", "§");
+        currentVersion = Objects.requireNonNull(cfg.getString("currentVersion")).replace("&", "§");
+        newestVersion = Objects.requireNonNull(cfg.getString("newestVersion")).replace("&", "§");
     }
 
 }

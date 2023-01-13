@@ -3,6 +3,7 @@ package de.rexlnico.realtimeplugin.methodes;
 import de.rexlnico.realtimeplugin.main.Main;
 import de.rexlnico.realtimeplugin.util.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
@@ -27,7 +28,7 @@ public class WorldContainer {
     private final File file;
 
     private BukkitTask task;
-    private String doDaylightCycle; // save original value of doDaylightCycle
+    private boolean doDaylightCycle; // save original value of doDaylightCycle
 
 
     private boolean active;
@@ -59,8 +60,10 @@ public class WorldContainer {
             List<Runnable> stack = new ArrayList<>();
 
             if (time) {
-                this.doDaylightCycle = world.getGameRuleValue("doDaylightCycle");
-                world.setGameRuleValue("doDaylightCycle", "false");
+                //this.doDaylightCycle = world.getGameRuleValue("doDaylightCycle");
+                //world.setGameRuleValue("doDaylightCycle", "false");
+                this.doDaylightCycle = Boolean.TRUE.equals(world.getGameRuleValue(GameRule.DO_DAYLIGHT_CYCLE));
+                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
 
                 stack.add(() -> {
                     // get time asynchronously
@@ -78,10 +81,8 @@ public class WorldContainer {
                 });
             }
 
-            if (!stack.isEmpty()) {
-                task = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(),
-                        () -> stack.forEach(Runnable::run), 0, 20 * updateInterval);
-            }
+            task = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getPlugin(),
+                    () -> stack.forEach(Runnable::run), 0, 20 * updateInterval);
         }
     }
 
@@ -96,8 +97,9 @@ public class WorldContainer {
     }
 
     public void disable() {
-        if (time && doDaylightCycle != null) {
-            world.setGameRuleValue("doDaylightCycle", doDaylightCycle);
+        if (time) {
+            //world.setGameRuleValue("doDaylightCycle", doDaylightCycle);
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, doDaylightCycle);
         }
         cancelTask();
     }
