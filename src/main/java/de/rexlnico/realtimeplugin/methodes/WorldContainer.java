@@ -23,12 +23,16 @@ import java.util.List;
 public class WorldContainer {
 
     private static final double SECONDS_TO_TICKS_FACTOR = 1_000d / Math.pow(60d, 2d);
+    private static final long FIRST_FULL_MOON_SINCE_EPOCH = 1814400; //22 Jan 1970
+    private static final double SECONDS_IN_MOON_CYCLE = 2551392; //29.53 days
+    private static final int MOON_PHASE_GAME_COUNT = 8;
+    private static final int MOON_PHASE_GAME_ADVANCE = 24000;
+    private static final int MOON_PHASE_GAME_CYCLE = MOON_PHASE_GAME_ADVANCE * MOON_PHASE_GAME_COUNT;
 
     private final File file;
 
     private BukkitTask task;
     private String doDaylightCycle; // save original value of doDaylightCycle
-
 
     private boolean active;
     private World world;
@@ -64,9 +68,9 @@ public class WorldContainer {
 
                 stack.add(() -> {
                     // get time asynchronously
-                    int time = getTime();
+                    long time = getTime();
                     // set time synchronously
-                    scheduler.runTask(plugin, () -> world.setTime(time));
+                    scheduler.runTask(plugin, () -> world.setFullTime(time));
                 });
             }
             if (weather) {
@@ -89,10 +93,16 @@ public class WorldContainer {
         return ZonedDateTime.ofInstant(Instant.now() /* in UTC */, zone);
     }
 
-    public int getTime() {
+    public long getTime() {
         ZonedDateTime dateTime = getDateTime();
-        int secondsInDay = dateTime.getHour() * 3600 + dateTime.getMinute() * 60 + dateTime.getSecond();
-        return Utils.overflow(18_000 + (int) (secondsInDay * SECONDS_TO_TICKS_FACTOR), 24_000);
+        double secondsSinceFullMoon = (dateTime.toEpochSecond() - FIRST_FULL_MOON_SINCE_EPOCH) % SECONDS_IN_MOON_CYCLE;
+        double moonPhase = secondsSinceFullMoon / SECONDS_IN_MOON_CYCLE;
+        long epochOffsetAdjustedSeconds = dateTime.toEpochSecond() + dateTime.getOffset().getTotalSeconds();
+        long secondsInDay = epochOffsetAdjustedSeconds % 86400;
+        int secondsInDayOverflowAdjusted = Utils.overflow(18_000 + (int) (secondsInDay * SECONDS_TO_TICKS_FACTOR), 24_000);
+        long secondsInYear = epochOffsetAdjustedSeconds % 31536000;
+        long baseFullTime = (long) Math.floor((secondsInYear * SECONDS_TO_TICKS_FACTOR) / (double) MOON_PHASE_GAME_CYCLE) * MOON_PHASE_GAME_CYCLE;
+        return baseFullTime + secondsInDayOverflowAdjusted + Math.round(moonPhase * MOON_PHASE_GAME_COUNT) * MOON_PHASE_GAME_ADVANCE;
     }
 
     public void disable() {
